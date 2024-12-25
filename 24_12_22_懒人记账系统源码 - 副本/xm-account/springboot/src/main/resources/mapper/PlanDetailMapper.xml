@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PlanDetailMapper">
+
+    <sql id="Base_Column_List">
+        id,money,date,plan_id,sum
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.PlanDetail">
+        select
+        <include refid="Base_Column_List" />
+        from plan_detail
+        <where>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="money != null"> and money = #{money}</if>
+            <if test="date != null"> and date like concat('%', #{date}, '%')</if>
+            <if test="planId != null"> and plan_id = #{planId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.PlanDetail">
+        select
+        <include refid="Base_Column_List" />
+        from plan_detail
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from plan_detail
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.PlanDetail" useGeneratedKeys="true" keyProperty="id">
+        insert into plan_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="money != null">money,</if>
+            <if test="date != null">date,</if>
+            <if test="planId != null">plan_id,</if>
+            <if test="sum != null">sum,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="money != null">#{money},</if>
+            <if test="date != null">#{date},</if>
+            <if test="planId != null">#{planId},</if>
+            <if test="sum != null">#{sum},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.PlanDetail">
+        update plan_detail
+        <set>
+            <if test="money != null">
+                money = #{money},
+            </if>
+            <if test="date != null">
+                date = #{date},
+            </if>
+            <if test="planId != null">
+                plan_id = #{planId},
+            </if>
+            <if test="sum != null">
+                sum = #{sum},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

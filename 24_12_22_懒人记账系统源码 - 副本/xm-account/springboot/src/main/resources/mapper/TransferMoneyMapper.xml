@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TransferMoneyMapper">
+
+    <sql id="Base_Column_List">
+        id,drawee_id,payee_id,price,remark,time,status
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.TransferMoney">
+        select
+        <include refid="Base_Column_List" />
+        from transfer_money
+        <where>
+            <if test="id != null"> and id = #{id}</if>
+            <if test="draweeId != null"> and drawee_id = #{draweeId}</if>
+            <if test="payeeId != null"> and payee_id = #{payeeId}</if>
+            <if test="price != null"> and price = #{price}</if>
+            <if test="startTime != null"> and time >= str_to_date(#{startTime} ,'%Y-%m-%d') </if>
+            <if test="endTime != null"> and str_to_date(#{endTime} ,'%Y-%m-%d') >= time </if>
+            <if test="remark != null"> and remark like concat('%', #{remark}, '%')</if>
+            <if test="time != null"> and time like concat('%', #{time}, '%')</if>
+            <if test="status != null"> and status like concat('%', #{status}, '%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.TransferMoney">
+        select
+        <include refid="Base_Column_List" />
+        from transfer_money
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from transfer_money
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.TransferMoney" useGeneratedKeys="true" keyProperty="id">
+        insert into transfer_money
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="draweeId != null">drawee_id,</if>
+            <if test="payeeId != null">payee_id,</if>
+            <if test="price != null">price,</if>
+            <if test="remark != null">remark,</if>
+            <if test="time != null">time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="draweeId != null">#{draweeId},</if>
+            <if test="payeeId != null">#{payeeId},</if>
+            <if test="price != null">#{price},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="time != null">#{time},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.TransferMoney">
+        update transfer_money
+        <set>
+            <if test="draweeId != null">
+                drawee_id = #{draweeId},
+            </if>
+            <if test="payeeId != null">
+                payee_id = #{payeeId},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>

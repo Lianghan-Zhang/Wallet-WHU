@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AcMapper">
+
+    <sql id="Base_Column_List">
+        id,user_id,balance,income,pay
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Ac">
+        select
+        ac.*, user.name as userName
+        from ac
+        left join user
+        on ac.user_id = user.id
+        <where>
+            <if test="userName != null"> and user.name like concat('%', #{userName}, '%') </if>
+            <if test="userId != null"> and ac.user_id = #{userId} </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Ac">
+        select
+        <include refid="Base_Column_List" />
+        from ac
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from ac
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Ac" useGeneratedKeys="true" keyProperty="id">
+        insert into ac
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="balance != null">balance,</if>
+            <if test="income != null">income,</if>
+            <if test="pay != null">pay,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="income != null">#{income},</if>
+            <if test="pay != null">#{pay},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Ac">
+        update ac
+        <set>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="balance != null">
+                balance = #{balance},
+            </if>
+            <if test="income != null">
+                income = #{income},
+            </if>
+            <if test="pay != null">
+                pay = #{pay},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

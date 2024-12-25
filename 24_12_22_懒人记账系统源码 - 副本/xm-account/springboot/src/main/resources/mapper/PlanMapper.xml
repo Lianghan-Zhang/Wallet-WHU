@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.PlanMapper">
+
+    <sql id="Base_Column_List">
+        id,name,cover,money,start,end,user_id,date
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Plan">
+        select
+        plan.*, user.name as userName
+        from plan
+        left join user
+        on plan.user_id = user.id
+        <where>
+            <if test="name != null"> and plan.name like concat('%', #{name}, '%')</if>
+            <if test="userId != null"> and plan.user_id = #{userId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Plan">
+        select
+        <include refid="Base_Column_List" />
+        from plan
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from plan
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Plan" useGeneratedKeys="true" keyProperty="id">
+        insert into plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="name != null">name,</if>
+            <if test="cover != null">cover,</if>
+            <if test="money != null">money,</if>
+            <if test="start != null">start,</if>
+            <if test="end != null">end,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="date != null">date,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="name != null">#{name},</if>
+            <if test="cover != null">#{cover},</if>
+            <if test="money != null">#{money},</if>
+            <if test="start != null">#{start},</if>
+            <if test="end != null">#{end},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="date != null">#{date},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Plan">
+        update plan
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="cover != null">
+                cover = #{cover},
+            </if>
+            <if test="money != null">
+                money = #{money},
+            </if>
+            <if test="start != null">
+                start = #{start},
+            </if>
+            <if test="end != null">
+                end = #{end},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="date != null">
+                date = #{date},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>
